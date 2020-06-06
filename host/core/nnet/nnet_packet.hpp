@@ -54,16 +54,29 @@ public:
             return getTensor(it->second);
         }
     }
-#endif
-    //todo don't forget about cpp
+
     py::object getTensorEntryContainer()
     {
         py::object obj = py::cast(_tensor_entry_container);
         return obj;
     }
+    
+#else
+
+    std::shared_ptr<TensorEntryContainer> getTensorEntryContainer()
+    {
+        return _tensor_entry_container;
+    }
+
+#endif
+
 
 private:
-    TensorEntryContainer       *      _tensor_entry_container;
+#ifdef HOST_PYTHON_MODULE
+    TensorEntryContainer* _tensor_entry_container;
+#else
+    std::shared_ptr<TensorEntryContainer>_tensor_entry_container;
+#endif
 
           std::vector<std::shared_ptr<HostDataPacket>> _tensors_raw_data;
     const std::vector<TensorInfo>*                     _tensors_info                = nullptr;
