@@ -63,7 +63,7 @@ public:
     //todo don't forget about cpp
     py::object getTensorEntryContainer()
     {
-        py::object obj = py::cast(_tensor_entry_container);
+        py::object obj = py::cast(*_tensor_entry_container);
         return obj;
     }
 
