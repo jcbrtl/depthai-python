@@ -55,14 +55,15 @@ public:
         }
     }
 #endif
-
-    std::shared_ptr<TensorEntryContainer> getTensorEntryContainer()
+    //todo don't forget about cpp
+    py::object getTensorEntryContainer()
     {
-        return _tensor_entry_container;
+        py::object obj = py::cast(_tensor_entry_container);
+        return obj;
     }
 
 private:
-    std::shared_ptr<TensorEntryContainer>              _tensor_entry_container;
+    TensorEntryContainer       *      _tensor_entry_container;
 
           std::vector<std::shared_ptr<HostDataPacket>> _tensors_raw_data;
     const std::vector<TensorInfo>*                     _tensors_info                = nullptr;

@@ -881,7 +881,7 @@ PYBIND11_MODULE(depthai, m)
     py::class_<NNetPacket, std::shared_ptr<NNetPacket>>(m, "NNetPacket")
         .def("get_tensor", &NNetPacket::getTensor, py::return_value_policy::take_ownership)
         .def("get_tensor", &NNetPacket::getTensorByName, py::return_value_policy::take_ownership)
-        .def("entries", &NNetPacket::getTensorEntryContainer, py::return_value_policy::reference)
+        .def("entries", &NNetPacket::getTensorEntryContainer, py::return_value_policy::take_ownership)
         ;
 
     // for te in nnet_packet.ENTRIES()
