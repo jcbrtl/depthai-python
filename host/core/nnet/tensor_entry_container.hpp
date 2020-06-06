@@ -21,7 +21,10 @@ public:
         : _tensors_raw_data(tensors_raw_data)
         , _tensors_info(&tensors_info)
     {}
-
+    ~TensorEntryContainer()
+    {
+        printf("deallocated \n");
+    }
     unsigned size() const
     {
         assert(nullptr != _tensors_info);

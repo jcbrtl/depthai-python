@@ -61,10 +61,9 @@ public:
     }
 #endif
     //todo don't forget about cpp
-    py::object getTensorEntryContainer()
+    TensorEntryContainer *getTensorEntryContainer()
     {
-        py::object obj = py::cast(*_tensor_entry_container);
-        return obj;
+        return _tensor_entry_container;
     }
 
 private:
