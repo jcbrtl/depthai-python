@@ -37,17 +37,17 @@ public:
 
 
 #ifdef HOST_PYTHON_MODULE
-    py::array getTensor(unsigned index)
+    py::array* getTensor(unsigned index)
     {
         return _tensors_raw_data[index]->getPythonNumpyArray();
     }
 
-    py::array getTensorByName(const std::string &name)
+    py::array* getTensorByName(const std::string &name)
     {
         auto it = _tensor_name_to_index.find(name);
         if (it == _tensor_name_to_index.end())
         {
-            return py::cast<py::none>(Py_None);;
+            return nullptr;
         }
         else
         {

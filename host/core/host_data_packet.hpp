@@ -70,7 +70,7 @@ struct HostDataPacket
     }
 
 #ifdef HOST_PYTHON_MODULE
-    py::array getPythonNumpyArray()
+    py::array* getPythonNumpyArray()
     {
         assert(!dimensions.empty());
         assert(!data.empty());
@@ -125,14 +125,14 @@ struct HostDataPacket
         } catch (const std::exception& e)
         {
             std::cerr << e.what() << std::endl;
-            return py::cast<py::none>(Py_None);
+            result = nullptr;
         }
        
         //py::gil_scoped_release release; // REUIRED ???
 
         // std::cout << "===> c++ getPythonNumpyArray " << t.ellapsed_us() << " us\n";
 
-        return *result;
+        return result;
     }
 
     py::object getMetadata(){

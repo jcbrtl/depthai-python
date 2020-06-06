@@ -840,7 +840,7 @@ PYBIND11_MODULE(depthai, m)
         .def("size", &HostDataPacket::size)
         .def("getData", &HostDataPacket::getPythonNumpyArray, py::return_value_policy::take_ownership)
         .def("getDataAsStr", &HostDataPacket::getDataAsString, py::return_value_policy::take_ownership)
-        .def("getMetadata", &HostDataPacket::getMetadata, py::return_value_policy::take_ownership)
+        .def("getMetadata", &HostDataPacket::getMetadata)
         ;
 
     // nnet_packets, DATA_PACKETS = p.get_available_nnet_and_data_packets()
@@ -866,10 +866,10 @@ PYBIND11_MODULE(depthai, m)
 
     // for NNET_PACKET in nnet_packets:
     py::class_<NNetPacket, std::shared_ptr<NNetPacket>>(m, "NNetPacket")
-        .def("get_tensor", &NNetPacket::getTensor, py::return_value_policy::take_ownership)
-        .def("get_tensor", &NNetPacket::getTensorByName, py::return_value_policy::take_ownership)
+        .def("get_tensor", &NNetPacket::getTensor, py::return_value_policy::copy)
+        .def("get_tensor", &NNetPacket::getTensorByName, py::return_value_policy::copy)
         .def("entries", &NNetPacket::getTensorEntryContainer, py::return_value_policy::take_ownership)
-        .def("getMetadata", &NNetPacket::getMetadata, py::return_value_policy::take_ownership)
+        .def("getMetadata", &NNetPacket::getMetadata, py::return_value_policy::copy)
         ;
 
     // for te in nnet_packet.ENTRIES()
