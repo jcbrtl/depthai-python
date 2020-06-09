@@ -61,8 +61,9 @@ struct HostDataPacket
     }
     ~HostDataPacket()
     {
-        printf("destructor packet %s \n",stream_name.c_str());
+        // printf("destructor packet %s \n",stream_name.c_str());
     }
+    
     unsigned size()
     {
         return data.size();
