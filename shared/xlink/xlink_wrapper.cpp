@@ -732,6 +732,7 @@ void XLinkWrapper::onNewDataSubject(
 
     // boost::upgrade_lock< boost::shared_mutex > lock(_observer_id_to_stream_id_lock);
     // boost::upgrade_to_unique_lock<boost::shared_mutex> write_lock(lock);
+    std::lock_guard<std::mutex> guard(_dispatcher_lock);
 
     if (_be_verbose) { printf("Creating observer stream %s: ...\n", stream_info.name); }
 
@@ -751,11 +752,13 @@ void XLinkWrapper::onNewData(
 )
 {
     // TODO: use sync. Not safe!
+    
 
 //    std::shared_lock<std::shared_timed_mutex> read_lock(_observer_id_to_stream_id_lock);
 
     // boost::shared_lock< boost::shared_mutex > read_lock(_observer_id_to_stream_id_lock);
-
+    
+    std::lock_guard<std::mutex> guard(_dispatcher_lock);
     do
     {
         if (_be_verbose) { printf("=== New data in observer stream %s, size: %d\n", stream_info.name, int(data.size)); }
@@ -782,11 +785,12 @@ void XLinkWrapper::onNewData(
 void XLinkWrapper::closeAllObserverStreams()
 {
     // TODO: use sync. Not safe!
-
+    
     // std::lock_guard<std::shared_timed_mutex> write_lock(_observer_id_to_stream_id_lock);
 
     // boost::upgrade_lock< boost::shared_mutex > lock(_observer_id_to_stream_id_lock);
     // boost::upgrade_to_unique_lock<boost::shared_mutex> write_lock(lock);
+    std::lock_guard<std::mutex> guard(_dispatcher_lock);
 
     for (auto &it : _observer_id_to_stream_id)
     {

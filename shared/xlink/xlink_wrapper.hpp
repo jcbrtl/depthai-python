@@ -104,7 +104,7 @@ private:
     volatile bool                   _threads_exit       = false;
     std::mutex             _threads_subject_list_lock; // used in: openStreamInThreadAndNotifyObservers, waitForThreads
     std::list<std::thread> _threads_subject;
-
+    std::mutex             _dispatcher_lock;
     mutable std::mutex     _open_stream_lock; // used in: openStream
 
     std::map<std::string, int> _observer_id_to_stream_id; // stream name -> xlink`s stream id

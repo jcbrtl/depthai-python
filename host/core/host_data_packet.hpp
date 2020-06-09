@@ -59,7 +59,10 @@ struct HostDataPacket
 
         constructor_timer = Timer();
     }
-
+    ~HostDataPacket()
+    {
+        printf("destructor packet %s \n",stream_name.c_str());
+    }
     unsigned size()
     {
         return data.size();
