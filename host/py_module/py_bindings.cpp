@@ -202,7 +202,7 @@ bool init_device(
             break;
         }
 
-        wdog_start();
+        // wdog_start();
 
         // config_d2h
         {

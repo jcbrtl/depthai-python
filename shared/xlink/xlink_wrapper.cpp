@@ -655,8 +655,13 @@ void XLinkWrapper::openAndReadDataThreadFunc(
                 //             stream_id, stream_info.name, packet->length, packet_counter);
                 // }
                 wdog_keepalive();
-                notifyObservers(stream_info, data);
 
+                while(1)
+                {
+                    //send first packet every 1ms to reproduce race condition
+                    notifyObservers(stream_info, data);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                }
                 packet_counter += 1;
 
                 // release data

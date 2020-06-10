@@ -16,6 +16,16 @@ void HostPipeline::onNewData(
     const StreamData& data
 )
 {
+    bool locked = q_lock.try_lock();
+    if(!locked)
+    {        
+        static int once = 1;
+        if(once)
+        {
+            once = 0;
+            std::cout << "Multiple threads are calling onNewData simultaneously, spsc queue push should be called only from 1\n";
+        }
+    }
     Timer t;
 
     // std::cout << "--- new data from " << info.name << " , size: " << data.size << "\n";
@@ -49,13 +59,17 @@ void HostPipeline::onNewData(
 
     if (!_data_queue_lf.push(host_data))
     {
-        std::unique_lock<std::mutex> guard(q_lock);
-        _data_queue_lf.pop();
-        guard.unlock();
-        if (!_data_queue_lf.push(host_data))
-        {
-            std::cerr << "Data queue is full " << info.name << ":\n";
-        }
+        // std::unique_lock<std::mutex> guard(q_lock);
+        // _data_queue_lf.pop();
+        // guard.unlock();
+        // if (!_data_queue_lf.push(host_data))
+        // {
+        //     std::cerr << "Data queue is full " << info.name << ":\n";
+        // }
+    }
+    if(locked)
+    {
+        q_lock.unlock();
     }
 
     // std::cout << "===> onNewData " << t.ellapsed_us() << " us\n";
