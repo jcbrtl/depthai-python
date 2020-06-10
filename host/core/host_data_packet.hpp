@@ -61,6 +61,9 @@ struct HostDataPacket
     }
     ~HostDataPacket()
     {
+        memset(data.data(), 0xA5, data.size());
+        elem_size = 0xA5;
+        stream_name = "deallocated";
         // printf("destructor packet %s \n",stream_name.c_str());
     }
     

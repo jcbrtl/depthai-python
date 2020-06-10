@@ -925,13 +925,7 @@ PYBIND11_MODULE(depthai, m)
     //             # e[0]: depthai.TensorEntry
     //             # e[0][0]: float
 
-
-    py::class_<HostPipeline>(m, "Pipeline")
-        .def("get_available_data_packets", &HostPipeline::getAvailableDataPackets, py::return_value_policy::copy)
-        ;
-
     py::class_<CNNHostPipeline, std::shared_ptr<CNNHostPipeline>>(m, "CNNPipeline")
-        .def("get_available_data_packets", &CNNHostPipeline::getAvailableDataPackets, py::return_value_policy::copy)
         .def("get_available_nnet_and_data_packets", &CNNHostPipeline::getAvailableNNetAndDataPackets, py::return_value_policy::copy)
         ;
 
