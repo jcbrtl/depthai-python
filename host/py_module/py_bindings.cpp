@@ -36,6 +36,7 @@
 
 
 #include "capture_af_bindings.hpp"
+#include "isp3a_bindings.hpp"
 #include "../../shared/metadata/capture_metadata.hpp"
 
 #define WARNING "\033[1;5;31m"
@@ -839,6 +840,7 @@ PYBIND11_MAKE_OPAQUE(std::list<std::shared_ptr<NNetPacket>>);
 PYBIND11_MODULE(depthai, m)
 {
     init_binding_capture_af(m);
+    init_binding_isp3a(m);
 
     m.def(
         "send_DisparityConfidenceThreshold",
