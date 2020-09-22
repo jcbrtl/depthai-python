@@ -9,5 +9,5 @@
 void init_binding_host_data_packet(pybind11::module& m);
 
 struct PyHostDataPacket : public HostDataPacket{
-    pybind11::array* getPythonNumpyArray();
+    pybind11::array getPythonNumpyArray();
 };

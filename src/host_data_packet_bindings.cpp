@@ -19,7 +19,7 @@ void init_binding_host_data_packet(pybind11::module& m){
     py::class_<HostDataPacket, std::shared_ptr<HostDataPacket>>(m, "DataPacket")
         .def_readonly("stream_name", &HostDataPacket::stream_name)
         .def("size", &HostDataPacket::size)
-        .def("getData", static_cast<py::array* (HostDataPacket::*)()>(&PyHostDataPacket::getPythonNumpyArray), py::return_value_policy::take_ownership)
+        .def("getData", static_cast<py::array (HostDataPacket::*)()>(&PyHostDataPacket::getPythonNumpyArray), py::return_value_policy::take_ownership)
         .def("getDataAsStr", &HostDataPacket::getDataAsString, py::return_value_policy::take_ownership)
         .def("getMetadata", &HostDataPacket::getMetadata)
         .def("getObjectTracker", &HostDataPacket::getObjectTracker, py::return_value_policy::take_ownership)
@@ -76,14 +76,30 @@ void init_binding_host_data_packet(pybind11::module& m){
 // TODO - zero copy
 //https://github.com/pybind/pybind11/issues/323#issuecomment-575717041
 //https://github.com/pybind/pybind11/issues/1042#issuecomment-642215028
-py::array* PyHostDataPacket::getPythonNumpyArray()
+py::array PyHostDataPacket::getPythonNumpyArray()
 {
     assert(!dimensions.empty());
     assert(!data->empty());
 
+    auto v = new std::vector<unsigned char>(*data.get());
+    py::handle capsule = py::capsule(v, [](void *v) { delete reinterpret_cast<std::vector<int>*>(v); });
+        // ssize_t              ndim    = dimensions.size();
+    // std::vector<ssize_t> shape;
+    // std::vector<ssize_t> strides;
+    // py::buffer_info info(
+    //                     data->data(),                             /* data as contiguous array  */
+    //                     sizeof(unsigned char),                   /* size of one scalar        */
+    //                     py::format_descriptor<unsigned char>::format(), /* data type          */
+    //                     ndim,                                    /* number of dimensions      */
+    //                     shape,                                   /* shape of the matrix       */
+    //                     strides                                  /* strides for each axis     */
+    //                 );
+    // return py::array(pybind11::dtype(info), info.shape, info.strides, info.ptr, capsule);
+
     Timer t;
 
-    py::array* result = nullptr;
+    py::array result;
+    py::buffer_info info;
 
     py::gil_scoped_acquire acquire;
 
@@ -104,7 +120,7 @@ py::array* PyHostDataPacket::getPythonNumpyArray()
         // TODO: unite code in if blocks
         if (elem_size == 1)
         {
-            result = new py::array(py::buffer_info(
+            info = (py::buffer_info(
                         data->data(),                             /* data as contiguous array  */
                         sizeof(unsigned char),                   /* size of one scalar        */
                         py::format_descriptor<unsigned char>::format(), /* data type          */
@@ -115,7 +131,7 @@ py::array* PyHostDataPacket::getPythonNumpyArray()
         }
         else if (elem_size == 2)
         {
-            result = new py::array(py::buffer_info(
+            info = (py::buffer_info(
                         data->data(),                             /* data as contiguous array  */
                         sizeof(std::uint16_t),                          /* size of one scalar        */
                         py::format_descriptor<std::uint16_t>::format(), /* data type          */
@@ -131,12 +147,12 @@ py::array* PyHostDataPacket::getPythonNumpyArray()
     } catch (const std::exception& e)
     {
         std::cerr << e.what() << std::endl;
-        result = nullptr;
+        // result = nullptr;
     }
 
     //py::gil_scoped_release release; // REUIRED ???
 
     // std::cout << "===> c++ getPythonNumpyArray " << t.ellapsed_us() << " us\n";
-
+    return py::array(pybind11::dtype(info), info.shape, info.strides, info.ptr, capsule);
     return result;
 }
